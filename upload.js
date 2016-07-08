@@ -131,12 +131,12 @@
 							if(loaded>size)
 							{
 								loaded=loaded-size;
-								$con.find('.process-'+index+' i').animate({'width':'100%'},5);
+								$con.find('.process-'+index+' i').stop(true,true).animate({'width':'100%'},50);
 							}
 							else
 							{
 								var per=Math.floor(loaded/size*100) + '%';
-								$con.find('.process-'+index+' i').animate({'width':per},5);
+								$con.find('.process-'+index+' i').stop(true,true).animate({'width':per},400);
 								break;
 							}
 						}
