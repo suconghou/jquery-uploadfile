@@ -2,6 +2,11 @@
 {
 	var uploadFile=function(cfg)
 	{
+		var $choose=$(this);
+		if($choose.data('uploadinit'))
+		{
+			return false;
+		}
 		var config,clickToSendFile,chooseTrigger;
 		var options=
 		{
@@ -28,9 +33,9 @@
 		var multiple=config.multiple?' multiple="multiple" ':'';
 		$('body').append('<input id="'+id+'" type="file" '+multiple+' style="display:none">');
 		var $uploadInput=$('#'+id);
-		var $choose=$(this);
 		chooseTrigger=function(){$uploadInput.trigger('click');};
 		$choose.on('click',chooseTrigger);
+		$choose.data('uploadinit',1);
 		$uploadInput.on('change',function()
 		{
 			var files=this.files;
@@ -43,7 +48,6 @@
 				console.log('no file selected');
 			}
 		});
-
 		var checkData=function(files)
 		{
 			var formData=new FormData();
@@ -142,17 +146,19 @@
 				success:config.success,
 				error:config.error,
 			};
-			var destroy=config.destroy?function()
-			{
-				$uploadInput.remove();
-				if(config.processbar)
-				{
-					$(config.processContainer).empty();
-				}
-				$choose.off('click',chooseTrigger);
-				$(config.startBtn).off('click',clickToSendFile);
-			}:$.noop;
+			var destroy=config.destroy?destroyUpload:$.noop;
 			$.ajax(cfg).always(config.always).done(destroy);
+		};
+
+		var destroyUpload=function()
+		{
+			$uploadInput.remove();
+			if(config.processbar)
+			{
+				$(config.processContainer).empty();
+			}
+			$choose.off('click',chooseTrigger);
+			$(config.startBtn).off('click',clickToSendFile);
 		};
 
 		var showProcessBar=function(files)
@@ -164,6 +170,7 @@
 			});
 			$(config.processContainer).html(html.join(''));
 		};
+		return {destroy:destroyUpload,input:$uploadInput,button:$choose};
 	};
 
 	function size(size)

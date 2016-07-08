@@ -58,7 +58,7 @@
 				}
 			});
 
-			$('.autoupload').uploadFile(
+			var uploader1=$('.autoupload').uploadFile(
 			{
 				processbar:true,
 				processContainer:'#processContainer',
@@ -79,6 +79,33 @@
 					alert('finished');
 				}
 			});
+
+
+			//init it twice, got a false
+			var uploader2=$('.autoupload').uploadFile(
+			{
+				processbar:true,
+				processContainer:'#processContainer',
+				url:'http://media.suconghou.cn/upload.php',
+				data:[1,2,3,4],
+				dataType:'html',
+				before:function(config)
+				{
+					console.log(config);
+					config.data=['hi','hello','set new data'];
+				},
+				error:function()
+				{
+					alert('error');
+				},
+				success:function(data)
+				{
+					alert('finished');
+				}
+			});
+
+			console.log(uploader1,uploader2);
+
 
 		</script>
 	</footer>

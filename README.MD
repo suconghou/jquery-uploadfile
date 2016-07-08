@@ -24,12 +24,37 @@
 | startBtn | string | null  | must set startBtn when auto is false |
 | destroy  | bool   | false | destroy uploader once upload success |
 
-### description
+## usage
 
+```
+var uploader=$('.btn').uploadFile(
+{
+	url:'....',
+	data:'...',
+	success:function()
+	{
+
+	},
+	error:function()
+	{
+
+	}
+});
+
+console.log(uploader);
+
+uploader.destroy(); // destroy it
+```
+
+init it twice , no problem , you will got a false rather than an object.
+
+
+### description
 
 you can send data use the `data` key, data will be found in the  POST and is formated in json
 
 you can get all filelist in POST use the key `filelist` , which looks like `file0,file1,file2`
+
 
 git clone and see demo in index.html
 
