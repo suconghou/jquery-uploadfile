@@ -2,7 +2,7 @@
 {
 	var uploadFile=function(cfg)
 	{
-		var config;
+		var config,clickToSendFile,chooseTrigger;
 		var options=
 		{
 			url:null,
@@ -10,7 +10,7 @@
 			auto:true,
 			multiple:true,
 			allowExt:['jpg','png','gif'],
-			beforeSend:$.noop,
+			before:$.noop,
 			success:$.noop,
 			error:$.noop,
 			onprogress:null,
@@ -19,6 +19,7 @@
 			dataType:'json',
 			processContainer:null,
 			startBtn:null,
+			destroy:false
 		};
 		config=$.extend(options,cfg);
 		var t=(((1+Math.random())*0x10000000)|0).toString(16);
@@ -26,10 +27,9 @@
 		var multiple=config.multiple?' multiple="multiple" ':'';
 		$('body').append('<input id="'+id+'" type="file" '+multiple+' style="display:none">');
 		var $uploadInput=$('#'+id);
-		$(this).on('click',function()
-		{
-			$uploadInput.trigger('click');
-		});
+		var $choose=$(this);
+		chooseTrigger=function(){$uploadInput.trigger('click');};
+		$choose.on('click',chooseTrigger);
 		$uploadInput.on('change',function()
 		{
 			var files=this.files;
@@ -76,27 +76,26 @@
 				return alert(typeError);
 			}
 			formData.append('filelist',fileList);
+			config.before(config);
 			formData.append('data',JSON.stringify(config.data));
-			config.beforeSend(formData);
 			if(config.processbar)
 			{
 				showProcessBar(files);
 			}
+			clickToSendFile=function(){sendfile(formData,sizeArray);};
 			if(config.auto)
 			{
 				return sendfile(formData,sizeArray);
 			}
 			else
 			{
-				$(config.startBtn).off('click').one('click',function()
-				{
-					sendfile(formData,sizeArray);
-				});
+				$(config.startBtn).off('click',clickToSendFile).on('click',clickToSendFile);
 			}
 		};
 
 		var sendfile=function(formData,sizeArray)
 		{
+			$uploadInput.val('');
 			var cfg=
 			{
 				url:config.url,
@@ -105,44 +104,54 @@
 				processData: false,
 				type: 'POST',
 				dataType:config.dataType,
-			    data:formData,
+				data:formData,
 				xhr:function()
 				{
-			        var xhr = $.ajaxSettings.xhr();
-			        xhr.upload.onprogress = function(e)
-			        {
-			        	if($.isFunction(config.onprogress))
-			        	{
-			        		return config.onprogress(e,sizeArray);
-			        	}
-			        	var loaded=e.loaded;
-			        	if(!config.processbar)
-			        	{
-			        		return console.log('process '+Math.floor(loaded/e.total*100) + '%');
-			        	}
-			        	var $con=$(config.processContainer);
-			        	for(var index in sizeArray)
-			        	{
-			        		var size=sizeArray[index];
-			        		if(loaded>size)
-			        		{
-			        			loaded=loaded-size;
-			        			$con.find('.process-'+index+' i').animate({'width':'100%'},5);
-			        		}
-			        		else
-			        		{
-			        			var per=Math.floor(loaded/size*100) + '%';
-			        			$con.find('.process-'+index+' i').animate({'width':per},5);
-			        			break;
-			        		}
-			        	}
-			        };
-			        return xhr;
-			    },
+					var xhr = $.ajaxSettings.xhr();
+					xhr.upload.onprogress = function(e)
+					{
+						if($.isFunction(config.onprogress))
+						{
+							return config.onprogress(e,sizeArray);
+						}
+						var loaded=e.loaded;
+						if(!config.processbar)
+						{
+							return console.log('process '+Math.floor(loaded/e.total*100) + '%');
+						}
+						var $con=$(config.processContainer);
+						for(var index in sizeArray)
+						{
+							var size=sizeArray[index];
+							if(loaded>size)
+							{
+								loaded=loaded-size;
+								$con.find('.process-'+index+' i').animate({'width':'100%'},5);
+							}
+							else
+							{
+								var per=Math.floor(loaded/size*100) + '%';
+								$con.find('.process-'+index+' i').animate({'width':per},5);
+								break;
+							}
+						}
+					};
+					return xhr;
+				},
 				success:config.success,
 				error:config.error,
 			};
-			$.ajax(cfg);
+			var destroy=config.destroy?function()
+			{
+				$uploadInput.remove();
+				if(config.processbar)
+				{
+					$(config.processContainer).empty();
+				}
+				$choose.off('click',chooseTrigger);
+				$(config.startBtn).off('click',clickToSendFile);
+			}:$.noop;
+			$.ajax(cfg).always(config.always).done(destroy);
 		};
 
 		var showProcessBar=function(files)
@@ -158,14 +167,14 @@
 
 	function size(size)
 	{
-	    var name=['B','KB','MB','GB','TB','PB'];
-	    var pos=0;
-	    while(size>=1204)
-	    {
-	        size/=1024;
-	        pos++;
-	    }
-	    return size.toFixed(2)+" "+name[pos];
+		var name=['B','KB','MB','GB','TB','PB'];
+		var pos=0;
+		while(size>=1204)
+		{
+			size/=1024;
+			pos++;
+		}
+		return size.toFixed(2)+" "+name[pos];
 	}
 	$.fn.uploadFile=uploadFile;
 

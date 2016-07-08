@@ -1,7 +1,7 @@
 ## jquery-uploadfile
 
 
-** use jquery ajax upload multiple files in one request **
+**use jquery ajax upload multiple files in one request**
 
 ### config
 
@@ -12,7 +12,7 @@
 | multiple  | bool   | true          | can select and upload multiple |
 | auto      | bool   | true          | upload file after selected automatically |
 | allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
-| beforeSend | function | $.noop | before send ajax callback,can modify FormData here |
+| before    | function | $.noop | before send ajax callback,can modify data here,received param config |
 | success   |  function | $.noop | success callback |
 | error     | function | $.noop | error callback |
 | onprogress | function | null | upload process callback |
@@ -20,8 +20,8 @@
 | dataType  |  string | 'json' | same as $.ajax dataType |
 | processbar | bool | false | show process bar or not |
 | processContainer | string | null | must set processContainer when use processbar |
-| startBtn | string | null | must set startBtn when auto is false |
-
+| startBtn | string | null  | must set startBtn when auto is false |
+| destroy  | bool   | false | destroy uploader once upload success |
 
 ### description
 

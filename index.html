@@ -65,6 +65,11 @@
 				url:'http://media.suconghou.cn/upload.php',
 				data:[1,2,3,4],
 				dataType:'html',
+				before:function(config)
+				{
+					console.log(config);
+					config.data=['hi','hello','set new data'];
+				},
 				error:function()
 				{
 					alert('error');
