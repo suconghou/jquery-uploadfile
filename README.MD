@@ -13,8 +13,9 @@
 | auto      | bool   | true          | upload file after selected automatically |
 | allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
 | before    | function | $.noop | before send ajax callback,can modify data here,received param config |
-| success   |  function | $.noop | success callback |
+| success   | function | $.noop | success callback |
 | error     | function | $.noop | error callback |
+| always    | function | $.noop | request finished callback,no matter success or error |
 | onprogress | function | null | upload process callback |
 | data      |  object | null |   payload for ajax , server get from key `data` in POST  |
 | dataType  |  string | 'json' | same as $.ajax dataType |

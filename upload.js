@@ -19,6 +19,7 @@
 			dataType:'json',
 			processContainer:null,
 			startBtn:null,
+			always:$.noop,
 			destroy:false
 		};
 		config=$.extend(options,cfg);
