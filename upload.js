@@ -25,7 +25,9 @@
 			processContainer:null,
 			startBtn:null,
 			always:$.noop,
-			destroy:false
+			destroy:false,
+			typeError:'文件类型不允许!',
+			sizeError:'超过XXMB,无法上传!'
 		};
 		config=$.extend(options,cfg);
 		var t=(((1+Math.random())*0x10000000)|0).toString(16);
@@ -60,12 +62,12 @@
 			{
 				if(item.size>maxSize)
 				{
-					sizeError=item.name+'超过'+config.maxSize+'MB,无法上传!';
+					sizeError=item.name+config.sizeError.replace('XX',config.maxSize);
 				}
 				var arr=item.name.split('.');
 				if(arr.length<2 || ($.inArray(arr.pop().toLowerCase(),config.allowExt)<0))
 				{
-					typeError=item.name+'文件类型不允许!';
+					typeError=item.name+config.typeError;
 				}
 				var name='file'+index;
 				fileList.push(name);
@@ -157,7 +159,7 @@
 			{
 				$(config.processContainer).empty();
 			}
-			$choose.off('click',chooseTrigger);
+			$choose.off('click',chooseTrigger).data('uploadinit',0);
 			$(config.startBtn).off('click',clickToSendFile);
 		};
 

@@ -21,8 +21,10 @@
 | dataType  |  string | 'json' | same as $.ajax dataType |
 | processbar | bool | false | show process bar or not |
 | processContainer | string | null | must set processContainer when use processbar |
-| startBtn | string | null  | must set startBtn when auto is false |
-| destroy  | bool   | false | destroy uploader once upload success |
+| startBtn  | string | null  | must set startBtn when auto is false |
+| destroy   | bool   | false | destroy uploader once upload success |
+| typeError | string | `文件类型不允许!`    | alert msg when type not allow        |
+| sizeError | string | `超过XXMB,无法上传!` | alert msg when more than maxSize,use `XX` mean `maxSize` |
 
 ## usage
 
