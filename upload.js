@@ -89,14 +89,19 @@
 			{
 				showProcessBar(files);
 			}
-			clickToSendFile=function(){sendfile(formData,sizeArray);};
+
 			if(config.auto)
 			{
 				return sendfile(formData,sizeArray);
 			}
 			else
 			{
-				$(config.startBtn).off('click',clickToSendFile).on('click',clickToSendFile);
+				if(clickToSendFile)
+				{
+					$(config.startBtn).off('click',clickToSendFile);
+				}
+				clickToSendFile=function(){sendfile(formData,sizeArray);};
+				$(config.startBtn).on('click',clickToSendFile);
 			}
 		};
 
