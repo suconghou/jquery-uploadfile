@@ -14,6 +14,7 @@
 			maxSize:5,
 			auto:true,
 			multiple:true,
+			file:'file',
 			allowExt:['jpg','png','gif'],
 			before:$.noop,
 			success:$.noop,
@@ -69,7 +70,7 @@
 				{
 					typeError=item.name+config.typeError;
 				}
-				var name='file'+index;
+				var name=config.multiple?config.file+index:config.file;
 				fileList.push(name);
 				formData.append(name,item);
 				sizeArray.push(item.size);
@@ -82,7 +83,7 @@
 			{
 				return alert(typeError);
 			}
-			formData.append('filelist',fileList);
+			config.multiple&&formData.append('filelist',fileList);
 			config.before(config);
 			formData.append('data',JSON.stringify(config.data));
 			if(config.processbar)

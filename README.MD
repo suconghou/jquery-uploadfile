@@ -10,6 +10,7 @@
 | url       | string | null          | server receive file url |
 | maxSize   | number | 5             | max file size in MB     |
 | multiple  | bool   | true          | can select and upload multiple |
+| file      | string | `file`        | the file key,when multiple is false |
 | auto      | bool   | true          | upload file after selected automatically |
 | allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
 | before    | function | $.noop | before send ajax callback,can modify data here,received param config |
@@ -57,6 +58,7 @@ you can send data use the `data` key, data will be found in the  POST and is for
 
 you can get all filelist in POST use the key `filelist` , which looks like `file0,file1,file2`
 
+if multiple is false , your file would be post as key `file` which can be modified in the config `file`
 
 git clone and see demo in index.html
 
