@@ -84,7 +84,7 @@
 				},
 				success:function(data)
 				{
-					// alert('finished');
+					console.log('success get from server');
 				}
 			});
 
@@ -109,7 +109,15 @@
 				},
 				success:function(data)
 				{
-					// alert('finished');
+					console.log('success get from server');
+				},
+				always:function()
+				{
+					console.log('one request is finished');
+				},
+				done:function()
+				{
+					console.log('all is finished');
 				}
 			});
 

@@ -18,6 +18,7 @@
 | success   | function | $.noop | success callback |
 | error     | function | $.noop | error callback |
 | always    | function | $.noop | request finished callback,no matter success or error |
+| done      | function | $.noop | when all request is finished, useful in separate upload request |
 | onprogress | function | null | upload process callback |
 | data      |  object | null |   payload for ajax , server get from key `data` in POST  |
 | dataType  |  string | 'json' | same as $.ajax dataType |

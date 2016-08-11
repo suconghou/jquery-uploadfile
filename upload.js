@@ -7,7 +7,7 @@
 		{
 			return false;
 		}
-		var config,clickToSendFile,chooseTrigger;
+		var config,clickToSendFile,chooseTrigger,times=0;
 		var options=
 		{
 			url:null,
@@ -27,6 +27,7 @@
 			processContainer:null,
 			startBtn:null,
 			always:$.noop,
+			done:$.noop,
 			destroy:false,
 			typeError:'文件类型不允许!',
 			sizeError:'超过XXMB,无法上传!'
@@ -42,6 +43,10 @@
 		$choose.data('uploadinit',1);
 		$uploadInput.on('change',function()
 		{
+			if(times!==0)
+			{
+				return;
+			}
 			var files=this.files;
 			if(files.length>0)
 			{
@@ -197,7 +202,22 @@
 				error:config.error,
 			};
 			var destroy=config.destroy?destroyUpload:$.noop;
-			$.ajax(cfg).always(config.always).done(destroy);
+			if(config.separate)
+			{
+				times++;
+				$.ajax(cfg).always(config.always).always(function()
+				{
+					if(--times===0)
+					{
+						destroy();
+						config.done();
+					}
+				});
+			}
+			else
+			{
+				$.ajax(cfg).always(config.always).done(destroy).done(config.done);
+			}
 		};
 
 		var destroyUpload=function()
