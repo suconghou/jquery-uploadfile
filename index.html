@@ -69,6 +69,8 @@
 				before:function(config)
 				{
 					console.log(config);
+					config.fd.append('key','value');
+
 					config.data=['hi','hello','set new data'];
 				},
 				error:function()
