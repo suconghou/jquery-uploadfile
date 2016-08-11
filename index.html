@@ -31,6 +31,11 @@
 		<div id="processContainer"></div>
 		<button class="autoupload">autoupload</button>
 	</div>
+	<div>
+		<h2>upload multiple file separate</h2>
+		<div id="processContainer2"></div>
+		<button class="autoupload2">upload separate</button>
+	</div>
 	<footer>
 		<script type="text/javascript" src="http://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
 		<script type="text/javascript" src="/upload.js"></script>
@@ -79,22 +84,23 @@
 				},
 				success:function(data)
 				{
-					alert('finished');
+					// alert('finished');
 				}
 			});
 
 
-			//init it twice, got a false
-			var uploader2=$('.autoupload').uploadFile(
+			var uploader2=$('.autoupload2').uploadFile(
 			{
 				processbar:true,
-				processContainer:'#processContainer',
+				processContainer:'#processContainer2',
 				url:'http://media.suconghou.cn/upload.php',
 				data:[1,2,3,4],
 				dataType:'html',
-				before:function(config)
+				separate:true,
+				before:function(config,index,item)
 				{
 					console.log(config);
+					config.fd.append(index,item.name);
 					config.data=['hi','hello','set new data'];
 				},
 				error:function()
@@ -103,7 +109,7 @@
 				},
 				success:function(data)
 				{
-					alert('finished');
+					// alert('finished');
 				}
 			});
 

@@ -15,6 +15,7 @@
 			auto:true,
 			multiple:true,
 			file:'file',
+			separate:false,
 			allowExt:['jpg','png','gif'],
 			before:$.noop,
 			success:$.noop,
@@ -46,10 +47,6 @@
 			{
 				checkData(files);
 			}
-			else
-			{
-				console.log('no file selected');
-			}
 		});
 		var checkData=function(files)
 		{
@@ -72,7 +69,10 @@
 				}
 				var name=config.multiple?config.file+index:config.file;
 				fileList.push(name);
-				config.fd.append(name,item);
+				if(!config.separate)
+				{
+					config.fd.append(name,item);
+				}
 				sizeArray.push(item.size);
 			});
 			if(sizeError)
@@ -87,15 +87,33 @@
 			{
 				config.fd.append('filelist',fileList);
 			}
-			config.before(config);
-			config.fd.append('data',JSON.stringify(config.data));
+			if(!config.separate)
+			{
+				config.before(config,files);
+				config.fd.append('data',JSON.stringify(config.data));
+			}
 			if(config.processbar)
 			{
 				showProcessBar(files);
 			}
 			if(config.auto)
 			{
-				return sendfile(config.fd,sizeArray);
+				if(config.separate)
+				{
+					$.each(files,function(index,item)
+					{
+						config.fd=new FormData();
+						config.fd.append(config.file,item);
+						config.before(config,index,item);
+						config.fd.append('data',JSON.stringify(config.data));
+						sendfile(config.fd,[item.size],index);
+					});
+					return $uploadInput.val('');
+				}
+				else
+				{
+					return sendfile(config.fd,sizeArray);
+				}
 			}
 			else
 			{
@@ -103,14 +121,35 @@
 				{
 					$(config.startBtn).off('click',clickToSendFile);
 				}
-				clickToSendFile=function(){sendfile(config.fd,sizeArray);};
+				clickToSendFile=function()
+				{
+					if(config.separate)
+					{
+						$.each(files,function(index,item)
+						{
+							config.fd=new FormData();
+							config.fd.append(config.file,item);
+							config.before(config,index,item);
+							config.fd.append('data',JSON.stringify(config.data));
+							sendfile(config.fd,[item.size],index);
+						});
+						return $uploadInput.val('');
+					}
+					else
+					{
+						return sendfile(config.fd,sizeArray);
+					}
+				};
 				$(config.startBtn).on('click',clickToSendFile);
 			}
 		};
 
-		var sendfile=function(formData,sizeArray)
+		var sendfile=function(formData,sizeArray,singleIndex)
 		{
-			$uploadInput.val('');
+			if(!config.separate)
+			{
+				$uploadInput.val('');
+			}
 			var cfg=
 			{
 				url:config.url,
@@ -125,16 +164,17 @@
 					var xhr = $.ajaxSettings.xhr();
 					xhr.upload.onprogress = function(e)
 					{
+						var loaded=e.loaded;
 						if($.isFunction(config.onprogress))
 						{
-							return config.onprogress(e,sizeArray);
-						}
-						var loaded=e.loaded;
-						if(!config.processbar)
-						{
-							return console.log('process '+Math.floor(loaded/e.total*100) + '%');
+							config.onprogress(Math.floor(loaded/e.total*100)+'%',e,sizeArray);
 						}
 						var $con=$(config.processContainer);
+						if(singleIndex)
+						{
+							var singper=Math.floor(loaded/sizeArray[0]*100) + '%';
+							return $con.find('.process-'+singleIndex+' i').stop(true,true).animate({'width':singper},400);
+						}
 						for(var index in sizeArray)
 						{
 							var size=sizeArray[index];
@@ -176,7 +216,10 @@
 			var html=[];
 			$.each(files,function(index,item)
 			{
-				html.push('<div><p class="filename file-'+index+' ">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p></div>');
+				if(item)
+				{
+					html.push('<div><p class="filename file-'+index+' ">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p></div>');
+				}
 			});
 			$(config.processContainer).html(html.join(''));
 		};

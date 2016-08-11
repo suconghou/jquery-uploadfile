@@ -10,6 +10,7 @@
 | url       | string | null          | server receive file url |
 | maxSize   | number | 5             | max file size in MB     |
 | multiple  | bool   | true          | can select and upload multiple |
+| separate  | bool   | true          | upload multiple file in separate request  |
 | file      | string | `file`        | the file key,when multiple is false |
 | auto      | bool   | true          | upload file after selected automatically |
 | allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
@@ -60,7 +61,36 @@ you can get all filelist in POST use the key `filelist` , which looks like `file
 
 if multiple is false , your file would be post as key `file` which can be modified in the config `file`
 
+when separate is true
+
+```
+before:function(config,index,item)
+{
+	//index is the filelist index
+	//item is the file item
+},
+```
+
+when separate is flase
+
+```
+before:function(config,filelist)
+{
+	//only get 2 params
+},
+```
+
+```
+before:function(config,index,item)
+{
+	config.fd.append('key','post value ');
+	//can get all config in the config , but should not modify some important key
+},
+```
+
 git clone and see demo in index.html
+
+
 
 
 
