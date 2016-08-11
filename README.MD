@@ -9,8 +9,8 @@
 | ------    | ----   | ----          | ----        |
 | url       | string | null          | server receive file url |
 | maxSize   | number | 5             | max file size in MB     |
-| multiple  | bool   | true          | can select and upload multiple |
-| separate  | bool   | true          | upload multiple file in separate request  |
+| multiple  | bool   | true          | can select and upload multiple files |
+| separate  | bool   | false         | upload multiple files in separate request  |
 | file      | string | `file`        | the file key,when multiple is false |
 | auto      | bool   | true          | upload file after selected automatically |
 | allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
@@ -57,7 +57,7 @@ init it twice , no problem , you will got a false rather than an object.
 
 you can send data use the `data` key, data will be found in the  POST and is formated in json
 
-you can get all filelist in POST use the key `filelist` , which looks like `file0,file1,file2`
+when multiple is true , you can get all filelist in POST use the key `filelist` , which looks like `file0,file1,file2`
 
 if multiple is false , your file would be post as key `file` which can be modified in the config `file`
 
