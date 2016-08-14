@@ -65,12 +65,26 @@
 			{
 				if(item.size>maxSize)
 				{
-					sizeError=item.name+config.sizeError.replace('XX',config.maxSize);
+					if($.isFunction(config.sizeError))
+					{
+						sizeError={item:item,maxSize:config.maxSize};
+					}
+					else
+					{
+						sizeError=item.name+config.sizeError.replace('XX',config.maxSize);
+					}
 				}
 				var arr=item.name.split('.');
 				if(arr.length<2 || ($.inArray(arr.pop().toLowerCase(),config.allowExt)<0))
 				{
-					typeError=item.name+config.typeError;
+					if($.isFunction(config.typeError))
+					{
+						typeError={item:item,allowExt:config.allowExt};
+					}
+					else
+					{
+						typeError=item.name+config.typeError;
+					}
 				}
 				var name=config.multiple?config.file+index:config.file;
 				fileList.push(name);
@@ -82,10 +96,18 @@
 			});
 			if(sizeError)
 			{
+				if($.isFunction(config.sizeError))
+				{
+					return config.sizeError(sizeError);
+				}
 				return alert(sizeError);
 			}
 			if(typeError)
 			{
+				if($.isFunction(config.typeError))
+				{
+					return config.typeError(typeError);
+				}
 				return alert(typeError);
 			}
 			if(config.multiple)

@@ -26,8 +26,8 @@
 | processContainer | string | null | must set processContainer when use processbar |
 | startBtn  | string | null  | must set startBtn when auto is false |
 | destroy   | bool   | false | destroy uploader once upload success |
-| typeError | string | `文件类型不允许!`    | alert msg when type not allow        |
-| sizeError | string | `超过XXMB,无法上传!` | alert msg when more than maxSize,use `XX` mean `maxSize` |
+| typeError | string or function | `文件类型不允许!`    | alert msg when type not allow        |
+| sizeError | string or function | `超过XXMB,无法上传!` | alert msg when more than maxSize,use `XX` mean `maxSize` |
 
 ## usage
 
