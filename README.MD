@@ -91,8 +91,13 @@ before:function(config,index,item)
 
 git clone and see demo in index.html
 
+## Broswers
 
+ie8 and ie9 not support `input file` to get file info
 
+thus only for ie10+,google,firefox,safai
+
+some upload polyfills for old browsers see https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills
 
 
 
