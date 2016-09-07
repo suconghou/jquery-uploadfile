@@ -114,11 +114,6 @@
 			{
 				config.fd.append('filelist',fileList);
 			}
-			if(!config.separate)
-			{
-				config.before(config,files);
-				config.fd.append('data',JSON.stringify(config.data));
-			}
 			if(config.processbar)
 			{
 				showProcessBar(files);
@@ -131,14 +126,21 @@
 					{
 						config.fd=new FormData();
 						config.fd.append(config.file,item);
-						config.before(config,index,item);
-						config.fd.append('data',JSON.stringify(config.data));
-						sendfile(config.fd,[item.size],index);
+						if(config.before(config,index,item)!==false)
+						{
+							config.fd.append('data',JSON.stringify(config.data));
+							sendfile(config.fd,[item.size],index);
+						}
 					});
 					return $uploadInput.val('');
 				}
 				else
 				{
+					if(config.before(config,files)===false)
+					{
+						return;
+					}
+					config.fd.append('data',JSON.stringify(config.data));
 					return sendfile(config.fd,sizeArray);
 				}
 			}
@@ -156,14 +158,21 @@
 						{
 							config.fd=new FormData();
 							config.fd.append(config.file,item);
-							config.before(config,index,item);
-							config.fd.append('data',JSON.stringify(config.data));
-							sendfile(config.fd,[item.size],index);
+							if(config.before(config,index,item)!==false)
+							{
+								config.fd.append('data',JSON.stringify(config.data));
+								sendfile(config.fd,[item.size],index);
+							}
 						});
 						return $uploadInput.val('');
 					}
 					else
 					{
+						if(config.before(config,files)===false)
+						{
+							return;
+						}
+						config.fd.append('data',JSON.stringify(config.data));
 						return sendfile(config.fd,sizeArray);
 					}
 				};

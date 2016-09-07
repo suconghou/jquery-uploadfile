@@ -89,6 +89,8 @@ before:function(config,index,item)
 },
 ```
 
+use before callback return false to prevet upload
+
 git clone and see demo in index.html
 
 ## Broswers
