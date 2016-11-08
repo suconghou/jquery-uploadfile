@@ -7,7 +7,7 @@
 		{
 			return false;
 		}
-		var config,clickToSendFile,chooseTrigger,times=0;
+		var config,clickToSendFile,chooseTrigger,prevent=$.noop,times=0;
 		var options=
 		{
 			url:null,
@@ -26,6 +26,7 @@
 			dataType:'json',
 			processContainer:null,
 			startBtn:null,
+			fileBox:null,
 			always:$.noop,
 			done:$.noop,
 			destroy:false,
@@ -39,6 +40,24 @@
 		$('body').append('<input id="'+id+'" type="file" '+multiple+' style="display:none">');
 		var $uploadInput=$('#'+id);
 		chooseTrigger=function(){$uploadInput.trigger('click');};
+		if(config.fileBox)
+		{
+			var onDrop=function(e)
+			{
+				if(e.originalEvent.dataTransfer&&e.originalEvent.dataTransfer.files.length>0)
+				{
+					e.preventDefault();
+	                e.stopPropagation();
+					checkData(e.originalEvent.dataTransfer.files);
+				}
+			};
+			prevent=function(e){e.preventDefault(); e.stopPropagation();};
+			var $fileBox=$(config.fileBox);
+			if($fileBox.length)
+			{
+				$fileBox.on('dragover dragenter',prevent).on('drop',onDrop);
+			}
+		}
 		$choose.on('click',chooseTrigger);
 		$choose.data('uploadinit',1);
 		$uploadInput.on('change',function()
