@@ -76,12 +76,14 @@
 		{
 			config.fd=new FormData();
 			var fileList=[];
+			var fileListItem=[];
 			var maxSize=config.maxSize*1048576;
 			var sizeError=false;
 			var typeError=false;
 			var sizeArray=[];
 			$.each(files,function(index,item)
 			{
+				fileListItem.push(item);
 				if(item.size>maxSize)
 				{
 					if($.isFunction(config.sizeError))
@@ -148,7 +150,7 @@
 						if(config.before(config,index,item)!==false)
 						{
 							config.fd.append('data',JSON.stringify(config.data));
-							sendfile(config.fd,[item.size],index);
+							sendfile(config.fd,[item.size],index,fileListItem);
 						}
 					});
 					return $uploadInput.val('');
@@ -160,7 +162,7 @@
 						return;
 					}
 					config.fd.append('data',JSON.stringify(config.data));
-					return sendfile(config.fd,sizeArray);
+					return sendfile(config.fd,sizeArray,null,fileListItem);
 				}
 			}
 			else
@@ -180,7 +182,7 @@
 							if(config.before(config,index,item)!==false)
 							{
 								config.fd.append('data',JSON.stringify(config.data));
-								sendfile(config.fd,[item.size],index);
+								sendfile(config.fd,[item.size],index,fileListItem);
 							}
 						});
 						return $uploadInput.val('');
@@ -192,19 +194,27 @@
 							return;
 						}
 						config.fd.append('data',JSON.stringify(config.data));
-						return sendfile(config.fd,sizeArray);
+						return sendfile(config.fd,sizeArray,null,fileListItem);
 					}
 				};
 				$(config.startBtn).on('click',clickToSendFile);
 			}
 		};
 
-		var sendfile=function(formData,sizeArray,singleIndex)
+		var sendfile=function(formData,sizeArray,singleIndex,files)
 		{
 			if(!config.separate)
 			{
 				$uploadInput.val('');
 			}
+			var success=function(data,status,request)
+			{
+				config.success.call(this,data,status,request,files);
+			};
+			var error=function(data,status,request)
+			{
+				config.error.call(this,data,status,request,files);
+			};
 			var cfg=
 			{
 				url:config.url,
@@ -248,8 +258,8 @@
 					};
 					return xhr;
 				},
-				success:config.success,
-				error:config.error,
+				success:success,
+				error:error,
 			};
 			var destroy=config.destroy?destroyUpload:$.noop;
 			if(config.separate)

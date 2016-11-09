@@ -191,8 +191,11 @@
 				{
 					alert('uploader3 error');
 				},
-				success:function(data)
+				success:function(data,status,request,files)
 				{
+					console.info(status);
+					console.info(request);
+					console.info(files);
 					console.log('uploader3 success get from server');
 				},
 				always:function()
