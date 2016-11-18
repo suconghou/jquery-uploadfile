@@ -7,7 +7,7 @@
 		{
 			return false;
 		}
-		var config,clickToSendFile,chooseTrigger,prevent=$.noop,times=0;
+		var config,clickToSendFile,chooseTrigger,prevent=$.noop,times=0,pc,xhrs={};
 		var options=
 		{
 			url:null,
@@ -23,6 +23,7 @@
 			onprogress:null,
 			data:null,
 			processbar:false,
+			action:null,
 			dataType:'json',
 			processContainer:null,
 			startBtn:null,
@@ -72,6 +73,12 @@
 				checkData(files);
 			}
 		});
+		pc=config.processContainer?$(config.processContainer):null;
+		pc=pc&&pc.length?pc:null;
+		if(pc&&config.action)
+		{
+			pc.on('click','.action-icon-'+t,config.action);
+		}
 		var checkData=function(files)
 		{
 			config.fd=new FormData();
@@ -113,7 +120,7 @@
 				{
 					config.fd.append(name,item);
 				}
-				sizeArray.push(item.size);
+				sizeArray.push({id:uid(item),size:item.size});
 			});
 			if(sizeError)
 			{
@@ -145,12 +152,14 @@
 				{
 					$.each(files,function(index,item)
 					{
+						index=uid(item);
 						config.fd=new FormData();
 						config.fd.append(config.file,item);
 						if(config.before(config,index,item)!==false)
 						{
 							config.fd.append('data',JSON.stringify(config.data));
-							sendfile(config.fd,[item.size],index,fileListItem);
+							var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,fileListItem);
+							xhrs[index]=xhr;
 						}
 					});
 					return $uploadInput.val('');
@@ -177,12 +186,14 @@
 					{
 						$.each(files,function(index,item)
 						{
+							index=uid(item);
 							config.fd=new FormData();
 							config.fd.append(config.file,item);
 							if(config.before(config,index,item)!==false)
 							{
 								config.fd.append('data',JSON.stringify(config.data));
-								sendfile(config.fd,[item.size],index,fileListItem);
+								var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,fileListItem);
+								xhrs[index]=xhr;
 							}
 						});
 						return $uploadInput.val('');
@@ -234,25 +245,28 @@
 						{
 							config.onprogress(Math.floor(loaded/e.total*100)+'%',e,sizeArray);
 						}
-						var $con=$(config.processContainer);
-						if(singleIndex)
+						if(pc)
 						{
-							var singper=Math.floor(loaded/sizeArray[0]*100) + '%';
-							return $con.find('.process-'+singleIndex+' i').stop(true,true).animate({'width':singper},400);
-						}
-						for(var index in sizeArray)
-						{
-							var size=sizeArray[index];
-							if(loaded>size)
+							if(singleIndex)
 							{
-								loaded=loaded-size;
-								$con.find('.process-'+index+' i').stop(true,true).animate({'width':'100%'},50);
+								var singper=Math.floor(loaded/sizeArray[0].size*100) + '%';
+								return pc.find('.process-'+singleIndex+' i').stop(true,true).animate({'width':singper},400);
 							}
-							else
+							for(var index in sizeArray)
 							{
-								var per=Math.floor(loaded/size*100) + '%';
-								$con.find('.process-'+index+' i').stop(true,true).animate({'width':per},400);
-								break;
+								var item=sizeArray[index];
+								var size=item.size;
+								if(loaded>size)
+								{
+									loaded=loaded-size;
+									pc.find('.process-'+item.id+' i').stop(true,true).animate({'width':'100%'},50);
+								}
+								else
+								{
+									var per=Math.floor(loaded/size*100) + '%';
+									pc.find('.process-'+item.id+' i').stop(true,true).animate({'width':per},400);
+									break;
+								}
 							}
 						}
 					};
@@ -265,7 +279,7 @@
 			if(config.separate)
 			{
 				times++;
-				$.ajax(cfg).always(config.always).always(function()
+				return $.ajax(cfg).always(config.always).always(function()
 				{
 					if(--times===0)
 					{
@@ -276,34 +290,45 @@
 			}
 			else
 			{
-				$.ajax(cfg).always(config.always).done(destroy).done(config.done);
+				return $.ajax(cfg).always(config.always).done(destroy).done(config.done);
 			}
 		};
 
 		var destroyUpload=function()
 		{
 			$uploadInput.remove();
-			if(config.processbar)
-			{
-				$(config.processContainer).empty();
-			}
 			$choose.off('click',chooseTrigger).data('uploadinit',0);
 			$(config.startBtn).off('click',clickToSendFile);
+			return pc&&pc.empty();
 		};
 
 		var showProcessBar=function(files)
 		{
 			var html=[];
+			var action=config.action?'<i class="action-icon action-icon-'+t+'"></i>':'';
 			$.each(files,function(index,item)
 			{
 				if(item)
 				{
-					html.push('<div><p class="filename file-'+index+' ">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p></div>');
+					index=uid(item);
+					html.push('<div data-id='+index+'><p class="filename file-'+index+' ">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p>'+action+'</div>');
 				}
 			});
-			$(config.processContainer).html(html.join(''));
+			return pc&&pc.html(html.join(''));
 		};
-		return {destroy:destroyUpload,input:$uploadInput,button:$choose};
+		var clear=function(k)
+		{
+			if(k)
+			{
+				return pc.find('[data-id='+k+']').remove();
+			}
+			return pc&&pc.empty();
+		};
+		var get=function(k)
+		{
+			return xhrs[k];
+		};
+		return {destroy:destroyUpload,input:$uploadInput,button:$choose,clear:clear,get:get,uid:uid};
 	};
 
 	function size(size)
@@ -316,6 +341,10 @@
 			pos++;
 		}
 		return size.toFixed(2)+" "+name[pos];
+	}
+	function uid(file)
+	{
+		return w.btoa(encodeURI(file.lastModified+file.name+file.size)).replace(/[^\w]+/g,'');
 	}
 	$.fn.uploadFile=uploadFile;
 

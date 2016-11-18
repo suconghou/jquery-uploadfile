@@ -17,7 +17,12 @@
 			height: 100%;
 			width: 0.1%;
 		}
-
+		.action-icon{
+			display: inline-block;
+			background: url(http://suconghou.sinaapp.com/0259f52a8a45e0cb72a5c032eca503ee.png) no-repeat center;
+			width: 32px;
+		    height: 32px;
+		}
 
 		#file-box{
 			border: 2px dashed #aaa;
@@ -81,6 +86,12 @@
 		<button type="button" id="upload-btn" class="upload4">选择文件</button>
 
 
+	</div>
+	<hr>
+	<div>
+		<h2>can canel one request</h2>
+		<div id="processContainer5"></div>
+		<button class="autoupload5">choose file</button>
 	</div>
 
 	<footer>
@@ -228,6 +239,35 @@
 				error:function()
 				{
 					alert('error');
+				},
+				onprogress:function(e)
+				{
+					console.log(e);
+				}
+			});
+
+
+			var upload5=$('.autoupload5').uploadFile(
+			{
+				separate:true,
+				processbar:true,
+				processContainer:'#processContainer5',
+				url:'http://media.suconghou.cn/upload.php',
+				dataType:'html',
+				action:function()
+				{
+					var id=$(this).parent().data('id');
+					console.log(id);
+					upload5.get(id).abort();
+					upload5.clear(id);
+				},
+				success:function(data)
+				{
+					console.log('finished');
+				},
+				error:function(e)
+				{
+					console.log('error',e);
 				},
 				onprogress:function(e)
 				{
