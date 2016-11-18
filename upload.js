@@ -158,7 +158,7 @@
 						if(config.before(config,index,item)!==false)
 						{
 							config.fd.append('data',JSON.stringify(config.data));
-							var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,fileListItem);
+							var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,item);
 							xhrs[index]=xhr;
 						}
 					});
@@ -192,7 +192,7 @@
 							if(config.before(config,index,item)!==false)
 							{
 								config.fd.append('data',JSON.stringify(config.data));
-								var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,fileListItem);
+								var xhr=sendfile(config.fd,[{id:index,size:item.size}],index,item);
 								xhrs[index]=xhr;
 							}
 						});
