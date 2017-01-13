@@ -2,8 +2,7 @@
 {
 	var uploadFile=function(cfg)
 	{
-		var __this=this;
-		var $choose=$(__this);
+		var __this,$choose=$(this);
 		if($choose.data('uploadinit'))
 		{
 			return false;
@@ -41,7 +40,7 @@
 		var multiple=config.multiple?' multiple="multiple" ':'';
 		$('body').append('<input id="'+id+'" type="file" '+multiple+' style="display:none">');
 		var $uploadInput=$('#'+id);
-		chooseTrigger=function(){$uploadInput.trigger('click');};
+		chooseTrigger=function(e){__this=e.currentTarget;$uploadInput.trigger('click');};
 		if(config.fileBox)
 		{
 			var onDrop=function(e)
