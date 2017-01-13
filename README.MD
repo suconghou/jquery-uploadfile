@@ -24,6 +24,7 @@
 | dataType  |  string | 'json' | same as $.ajax dataType |
 | processbar | bool | false | show process bar or not |
 | processContainer | string | null | must set processContainer when use processbar |
+| action    | function | null | used with processbar,click callback function to call   |
 | startBtn  | string | null  | must set startBtn when auto is false |
 | fileBox 	| string | null  | query selector, drop file here can upload them  |
 | destroy   | bool   | false | destroy uploader once upload success |

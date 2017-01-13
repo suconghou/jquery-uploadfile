@@ -2,7 +2,8 @@
 {
 	var uploadFile=function(cfg)
 	{
-		var $choose=$(this);
+		var __this=this;
+		var $choose=$(__this);
 		if($choose.data('uploadinit'))
 		{
 			return false;
@@ -220,11 +221,11 @@
 			}
 			var success=function(data,status,request)
 			{
-				config.success.call(this,data,status,request,files);
+				config.success.call(__this,data,status,request,files);
 			};
 			var error=function(data,status,request)
 			{
-				config.error.call(this,data,status,request,files);
+				config.error.call(__this,data,status,request,files);
 			};
 			var cfg=
 			{
