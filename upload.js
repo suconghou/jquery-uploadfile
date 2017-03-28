@@ -311,7 +311,7 @@
 				if(item)
 				{
 					index=uid(item);
-					html.push('<div data-id='+index+'><p class="filename file-'+index+' ">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p>'+action+'</div>');
+					html.push('<div data-id='+index+'><p class="filename file-'+index+'">'+item.name+'('+size(item.size)+')'+'</p><p class="processbar process-'+index+'"><i></i></p>'+action+'</div>');
 				}
 			});
 			return pc&&pc.html(html.join(''));
@@ -330,6 +330,7 @@
 		};
 		return {destroy:destroyUpload,input:$uploadInput,button:$choose,clear:clear,get:get,uid:uid};
 	};
+	uploadFile.version="1.0";
 
 	function size(size)
 	{
