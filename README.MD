@@ -13,7 +13,7 @@
 | separate  | bool   | false         | upload multiple files in separate request  |
 | file      | string | `file`        | the file key,when multiple is false |
 | auto      | bool   | true          | upload file after selected automatically |
-| allowExt  | array  | ['jpg','png','gif'] |  file type can be upload |
+| allowExt  | array  | ['jpg','jpeg','png','gif'] |  file type can be upload |
 | before    | function | $.noop | before send ajax callback,can modify data here,received param config |
 | success   | function | $.noop | success callback |
 | error     | function | $.noop | error callback |

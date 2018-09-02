@@ -16,7 +16,7 @@
 			multiple:true,
 			file:'file',
 			separate:false,
-			allowExt:['jpg','png','gif'],
+			allowExt:['jpg','jpeg','png','gif'],
 			before:$.noop,
 			success:$.noop,
 			error:$.noop,
